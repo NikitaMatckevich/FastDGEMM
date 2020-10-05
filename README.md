@@ -7,7 +7,7 @@ I would be happy to know your opinion about this experiment and get some feedbac
 
 I would also appreciate any idea on how to improve the performance of this code.
 
-Stages of improvement ("Getting faster");
+Stages of improvement ("Getting faster"):
 
 ![](https://github.com/NikitaMatckevich/FastDGEMM/blob/master/benchmarks/1-Compiler.png)
 
