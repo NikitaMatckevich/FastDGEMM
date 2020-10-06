@@ -23,7 +23,7 @@ Stages of improvement ("Getting faster"):
 
 ![](https://github.com/NikitaMatckevich/FastDGEMM/blob/master/benchmarks/4-Multithread.png)
 
-> New feature, realization maybe isn't perfect
+> New feature - multithreading using std::thread, realization maybe isn't perfect
 
 ![](https://github.com/NikitaMatckevich/FastDGEMM/blob/master/benchmarks/5-CacheBlocking.png)
 
