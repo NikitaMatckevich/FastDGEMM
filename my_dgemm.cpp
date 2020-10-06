@@ -14,7 +14,7 @@ using thread_storage_t =
 
 constexpr int UNROLL = 4;
 constexpr int BLOCKSIZE = 32;
-constexpr int MAX_NUM_THREADS = 4;
+constexpr int MAX_NUM_THREADS = 4; // > 1 even for 1-thread applications
 
 void do_block(const int N,
               const double* A, const double* B, double* C)
@@ -45,10 +45,10 @@ void loc_my_dgemm(const int M, const int N,
         do_block(N, A + N*si + sk, B + N*sk + sj, C + N*si + sj);
 }
 
-void glob_my_dgemm(const int NUM_THREADS, const int N,
+void glob_my_dgemm(thread_storage_t thread_pool[],
+                   const int NUM_THREADS, const int N,
                    const double* A, const double* B, double* C)
 {
-  thread_storage_t thread_pool[MAX_NUM_THREADS];
   int wN = N / NUM_THREADS;
   for (int th_id = 0; th_id < NUM_THREADS-1; th_id++) {
     int offset = (th_id + 1) * wN * N;
@@ -71,12 +71,16 @@ void run(const int NUM_THREADS, const int N,
   *duration = 0.;
   *gflops   = 0.;
 
-  const int N2 = N*N;
+  const int N2 = N*N; 
+  thread_storage_t thread_pool[MAX_NUM_THREADS-1];
+
+  if (NUM_THREADS > MAX_NUM_THREADS)
+    throw invalid_argument("number of threads chosen too large");
 
   for (int test = 0; test < nbTests; test++) {
 
     auto t_beg = chrono::high_resolution_clock::now();
-    glob_my_dgemm(NUM_THREADS, N, A, B, C);
+    glob_my_dgemm(thread_pool, NUM_THREADS, N, A, B, C);
     auto t_end = chrono::high_resolution_clock::now();
 
     double test_d = chrono::duration<double,std::milli>(t_end - t_beg).count();
